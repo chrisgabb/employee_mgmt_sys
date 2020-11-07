@@ -38,4 +38,4 @@
   >### Email: cgabb1020@gmail.com
 
   ## Video Demonstration of Functionality
-  ![Preview of Functionality](https://drive.google.com/file/d/15Mhx4mQCOG3vd_V3a3zfSp4WhR0808KP/view)
+  ![Preview of Functionality][](https://drive.google.com/file/d/15Mhx4mQCOG3vd_V3a3zfSp4WhR0808KP/view)
