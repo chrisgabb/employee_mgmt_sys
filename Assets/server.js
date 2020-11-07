@@ -1,6 +1,5 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
-var consoleT = require("console.table")
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -16,25 +15,12 @@ var connection = mysql.createConnection({
     database: "employee_db"
 });
 
-
 connection.connect(function (err) {
     if (err) throw err;
-    runSearch()
+    runSearch();
 });
 
-// function allEmp() {
-//     connection.query(`SELECT employee.first_name, employee.last_name, employee.role_id, employee.manager_id, role.id, role.title
-//                     FROM role
-//                     LEFT JOIN employee ON role.id = employee.role_id`, function (err, res) {
-//         if (err) throw err;
-//         console.log(consoleT.getTable(res))
-
-//         })
-//     }
-
-
 function runSearch() {
-
     inquirer
         .prompt({
             name: "action",
@@ -109,9 +95,6 @@ function addDept() {
 }
 
 function addRoles() {
-    connection.query("SELECT * FROM role", function (err, res) {
-        if (err) throw err;
-            console.log(consoleT.getTable(res))
     inquirer
         .prompt([
             {
@@ -139,14 +122,9 @@ function addRoles() {
                 runSearch();
             });
         });
-    })
 }
 
 function addEmployees() {
-    connection.query(`SELECT role.id, role.title, employee.first_name, employee.last_name, employee.role_id, employee.manager_id 
-                    FROM role
-                    LEFT JOIN employee ON role.id = employee.role_id`, function (err, res) {
-        if (err) throw err;
     inquirer
         .prompt([
             {
@@ -160,34 +138,18 @@ function addEmployees() {
                 message: "What is the employee's last name?"
             },
             {
-                name: "role",
-                type: "list",
-                message: "Select the employee's role",
-                choices: function () {
-                  var roleArray = [];
-                  for (let i = 0; i < res.length; i++) {
-                    roleArray.push(res[i].id + " " + res[i].title)
-                  }
-                  return roleArray
-                }
-              },
-              {
-                name: "manager",
-                type: "list",
-                message: "Select the employee's manager",
-                choices: function () {
-                  var depArray = [];
-                  for (let i = 0; i < res.length; i++) {
-                      if (res[i].manager_id !== null) {
-                    depArray.push(res[i].first_name + " " + res[i].last_name)
-                  }
-                }
-                  return depArray
-                }
-              }])
+                name: "role_id",
+                type: "input",
+                message: "What is the employee's role id?"
+            },
+            {
+                name: "mgr_id",
+                type: "input",
+                message: "What is the manager id that this employee reports into?"
+            }])
         .then(function (answer) {
             var query = "INSERT INTO employee SET ?";
-            connection.query(query, { first_name: answer.first_name, last_name: answer.last_name, role_id: answer.role, manager_id: answer.manager }, function (err, res) {
+            connection.query(query, { first_name: answer.first_name, last_name: answer.last_name, role_id: answer.role_id, manager_id: answer.mgr_id }, function (err, res) {
                 if (err) {
                     return console.error(err.message)
                 }
@@ -195,7 +157,6 @@ function addEmployees() {
                 runSearch();
             });
         });
-    })
 }
 
 function viewDept() {
@@ -243,7 +204,7 @@ function viewEmployees() {
 
 }
 
-function updateEmployeeRole() {
+async function updateEmployeeRole() {
     inquirer
         .prompt([
             {
@@ -259,7 +220,7 @@ function updateEmployeeRole() {
         .then(function (answer) {
             var query = "UPDATE employee SET role_id = ? WHERE id = ?";
             connection.query(query, [answer.role_new, answer.employee_select], function (err, res) {
-                    console.log("ID: " + res[i].id + "|| First Name " + res[i].first_name + "|| Last Name: " + res[i].last_name + "|| Role ID: " + res[i].role_id + "|| Manager ID: " + res[i].manager_id);
+                console.log("ID: " + res[i].id + "|| First Name " + res[i].first_name + "|| Last Name: " + res[i].last_name + "|| Role ID: " + res[i].role_id + "|| Manager ID: " + res[i].manager_id);
 
             })
             runSearch();
